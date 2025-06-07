@@ -1,5 +1,3 @@
-# app.py
-
 import csv
 import os
 import time
@@ -106,16 +104,32 @@ def dashboard():
     tasks = load_tasks()
     user_tasks = [t for t in tasks if t['username'] == username]
 
+    sort_by = request.args.get('sort_by', '')
+
+    if sort_by == 'due_date':
+        user_tasks.sort(key=lambda t: t['due_date'] or '')
+    elif sort_by == 'priority':
+        priority_order = {'high': 0, 'medium': 1, 'low': 2}
+        user_tasks.sort(key=lambda t: priority_order.get(t['priority'], 3))
+
     total = len(user_tasks)
     completed = sum(t['completed'] == 'True' for t in user_tasks)
     pending = total - completed
 
     today = datetime.today()
     reminders = [f"'{t['task']}' is due tomorrow!" for t in user_tasks
-                 if t['due_date'] and datetime.strptime(t['due_date'], DATE_FORMAT) - today <= timedelta(days=1)
+                 if t['due_date'] and
+                    0 <= (datetime.strptime(t['due_date'], DATE_FORMAT) - today).days <= 1
                  and t['completed'] == 'False']
 
-    return render_template('dashboard.html', total_tasks=total, completed_tasks=completed, pending_tasks=pending, reminders=reminders)
+    return render_template('dashboard.html',
+                           total_tasks=total,
+                           completed_tasks=completed,
+                           pending_tasks=pending,
+                           reminders=reminders,
+                           tasks=user_tasks,
+                           sort_by=sort_by,
+                           notifications=[])
 
 @app.route('/profile', methods=['GET', 'POST'])
 def profile():
@@ -150,7 +164,6 @@ def delete_account():
     users = load_users()
     user = users.get(username)
 
-    # Handle security answer
     answer = request.form['security_answer'].strip().lower()
     global password_reset_attempts
     now = time.time()
@@ -168,7 +181,6 @@ def delete_account():
         flash(f"Wrong answer. Attempts left: {left}", 'danger')
         return redirect(url_for('profile'))
 
-    # Correct answer
     password_reset_attempts.pop(username, None)
     users.pop(username)
     save_users(users)
@@ -205,7 +217,6 @@ def add_task():
     save_tasks(tasks)
     flash('Task added successfully.', 'success')
     return redirect(url_for('dashboard'))
-
 
 if __name__ == '__main__':
     app.run(debug=True)
