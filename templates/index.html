@@ -1,0 +1,56 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>My Tasks</h2>
+<form method="post" action="{{ url_for('add_task') }}" class="mb-4">
+    <div class="row g-2">
+        <div class="col-sm-4">
+            <input class="form-control" name="task" placeholder="Task description" required>
+        </div>
+        <div class="col-sm-3">
+            <input class="form-control" name="due_date" type="date">
+        </div>
+        <div class="col-sm-3">
+            <select class="form-select" name="priority">
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+            </select>
+        </div>
+        <div class="col-sm-2">
+            <button class="btn btn-primary w-100">Add Task</button>
+        </div>
+    </div>
+</form>
+
+{% if tasks %}
+<table class="table table-bordered table-hover">
+    <thead class="table-dark">
+        <tr>
+            <th>Description</th>
+            <th>Due Date</th>
+            <th>Priority</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for task in tasks %}
+        <tr>
+            <td>{{ task['task'] }}</td>
+            <td>{{ task['due_date'] or 'No date' }}</td>
+            <td class="priority-{{ task['priority'] }}">{{ task['priority'].capitalize() }}</td>
+            <td>{{ '✓' if task['completed'] == 'True' else '✗' }}</td>
+            <td>
+                {% if task['completed'] == 'False' %}
+                    <a href="{{ url_for('complete_task', task_id=loop.index0) }}" class="btn btn-sm btn-success">Complete</a>
+                {% endif %}
+                <a href="{{ url_for('delete_task', task_id=loop.index0) }}" class="btn btn-sm btn-danger">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No tasks yet. Add some!</p>
+{% endif %}
+{% endblock %}

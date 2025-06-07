@@ -1,0 +1,114 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>📊 Dashboard</h2>
+
+<div class="row mb-4">
+  <div class="col-md-4">
+    <div class="card bg-light mb-3">
+      <div class="card-body text-center">
+        <h5 class="card-title">Total Tasks</h5>
+        <p class="display-6">{{ total_tasks }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card bg-success text-white mb-3">
+      <div class="card-body text-center">
+        <h5 class="card-title">Completed</h5>
+        <p class="display-6">{{ completed_tasks }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card bg-danger text-white mb-3">
+      <div class="card-body text-center">
+        <h5 class="card-title">Pending</h5>
+        <p class="display-6">{{ pending_tasks }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% if notifications %}
+  <div class="alert alert-warning">
+    <ul class="mb-0">
+      {% for note in notifications %}
+      <li>{{ note }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endif %}
+
+<!-- Add new task form -->
+<form method="POST" class="mb-5">
+  <div class="mb-3">
+    <input type="text" name="task" class="form-control" placeholder="New task description" required />
+  </div>
+  <div class="mb-3">
+    <input type="date" name="due_date" class="form-control" />
+  </div>
+  <div class="mb-3">
+    <select name="priority" class="form-select">
+      <option value="low" selected>Low Priority</option>
+      <option value="medium">Medium Priority</option>
+      <option value="high">High Priority</option>
+    </select>
+  </div>
+  <button type="submit" class="btn btn-success">Add Task</button>
+</form>
+
+<!-- Sort tasks -->
+<form method="get" class="mb-4 d-flex align-items-center gap-2">
+  <label for="sort_by" class="form-label mb-0">Sort by:</label>
+  <select name="sort_by" id="sort_by" class="form-select w-auto">
+    <option value="">-- None --</option>
+    <option value="due_date" {% if sort_by == 'due_date' %}selected{% endif %}>Due Date</option>
+    <option value="priority" {% if sort_by == 'priority' %}selected{% endif %}>Priority</option>
+  </select>
+  <button type="submit" class="btn btn-outline-primary btn-sm">Apply</button>
+</form>
+
+<!-- Tasks list -->
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Task</th>
+      <th>Due Date</th>
+      <th>Priority</th>
+      <th>Status</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for task in tasks %}
+    <tr>
+      <td>{{ task.task }}</td>
+      <td>{{ task.due_date or '-' }}</td>
+      <td>{{ task.priority.capitalize() }}</td>
+      <td>
+        {% if task.completed == 'True' %}
+          <span class="badge bg-success">Completed</span>
+        {% else %}
+          <span class="badge bg-warning text-dark">Pending</span>
+        {% endif %}
+      </td>
+      <td>
+        {% if task.completed == 'False' %}
+          <a href="{{ url_for('complete_task', task_index=loop.index0) }}" class="btn btn-sm btn-primary">Complete</a>
+        {% endif %}
+        <a href="{{ url_for('delete_task', task_index=loop.index0) }}" class="btn btn-sm btn-danger">Delete</a>
+      </td>
+    </tr>
+    {% else %}
+    <tr>
+      <td colspan="5" class="text-center">No tasks yet! Add some above.</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% for reminder in reminders %}
+  <div class="alert alert-warning">{{ reminder }}</div>
+{% endfor %}
+
+{% endblock %}

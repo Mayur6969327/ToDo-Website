@@ -1,0 +1,121 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f0f2f5;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 90%;
+    max-width: 1000px;
+    margin: 30px auto;
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+
+h1, h2 {
+    text-align: center;
+    color: #333;
+}
+
+.stats {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 30px;
+}
+
+.stat-box {
+    flex: 1;
+    text-align: center;
+    padding: 20px;
+    border-radius: 10px;
+    color: white;
+    font-size: 20px;
+    margin: 0 10px;
+    font-weight: bold;
+}
+
+.stat-total {
+    background-color: #343a40;
+}
+
+.stat-completed {
+    background-color: #28a745;
+}
+
+.stat-pending {
+    background-color: #dc3545;
+}
+
+form {
+    margin-bottom: 30px;
+}
+
+input, select, button {
+    padding: 10px;
+    margin: 8px 0;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box;
+}
+
+button {
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.task-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.task-table th, .task-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+.task-table th {
+    background-color: #f8f9fa;
+}
+
+.reminder {
+    background-color: #fff3cd;
+    color: #856404;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ffeeba;
+    border-radius: 6px;
+}
+
+.filter-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+.filter-buttons a {
+    padding: 10px 20px;
+    border: 1px solid #007bff;
+    color: #007bff;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: 0.2s ease-in-out;
+}
+
+.filter-buttons a:hover,
+.filter-buttons .active {
+    background-color: #007bff;
+    color: white;
+}
