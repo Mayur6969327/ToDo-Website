@@ -184,5 +184,30 @@ def logout():
     flash("Logged out", "info")
     return redirect(url_for('login'))
 
+@app.route('/add', methods=['GET', 'POST'])
+def add_task():
+    username = get_current_user()
+    if not username:
+        return redirect(url_for('login'))
+
+    if request.method == 'POST':
+        task = request.form['task']
+        due_date = request.form['due_date']
+        priority = request.form['priority']
+        new_task = {
+            'username': username,
+            'task': task,
+            'due_date': due_date,
+            'priority': priority,
+            'completed': 'False'
+        }
+        tasks = load_tasks()
+        tasks.append(new_task)
+        save_tasks(tasks)
+        flash('Task added successfully.', 'success')
+        return redirect(url_for('dashboard'))
+
+    return render_template('add_task.html')
+
 if __name__ == '__main__':
     app.run(debug=True)
