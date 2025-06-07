@@ -78,7 +78,15 @@
             <button type="submit">Reset Password</button>
         </form>
     </div>
-
+    {% if lock_time_left %}
+    <div class="alert alert-warning">
+        You have been locked out. Try again in {{ lock_time_left // 60 }} minutes.
+    </div>
+{% elif attempts_left is not none %}
+    <div class="alert alert-info">
+        You have {{ attempts_left }} attempts left to delete your account.
+    </div>
+{% endif %}
     <div class="section">
         <h3>Delete Account</h3>
         <p><strong>Security Question:</strong> {{ question }}</p>

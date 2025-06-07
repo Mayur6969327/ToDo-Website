@@ -136,10 +136,37 @@ def profile():
     username = get_current_user()
     if not username:
         return redirect(url_for('login'))
+
     users = load_users()
     user = users.get(username)
-    return render_template('profile.html', username=username, question=user['security_question'])
 
+    # Get the failed attempts and lockout time
+    global password_reset_attempts
+    now = time.time()
+    attempts, last_failed = password_reset_attempts.get(username, (0, 0))
+
+    lock_time_left = None
+    if attempts >= 3 and now - last_failed < 600:
+        lock_time_left = int(600 - (now - last_failed))  # Time left in seconds
+        flash(f"Too many failed attempts. Try again in {lock_time_left // 60} minutes.", 'danger')
+
+    if request.method == 'POST':
+        new = request.form['new_password']
+        confirm = request.form['confirm_password']
+        if new != confirm:
+            flash("Passwords do not match", 'danger')
+            return redirect(url_for('profile'))
+
+        users[username]['password'] = generate_password_hash(new)
+        save_users(users)
+        flash("Password reset successful", 'success')
+        return redirect(url_for('dashboard'))
+
+    return render_template('profile.html', username=username, question=user['security_question'],
+                           attempts_left=(3 - attempts) if lock_time_left is None else None,
+                           lock_time_left=lock_time_left)
+
+    
 @app.route('/reset_password', methods=['POST'])
 def reset_password():
     username = get_current_user()
