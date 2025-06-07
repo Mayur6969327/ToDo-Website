@@ -40,7 +40,7 @@
 {% endif %}
 
 <!-- Add new task form -->
-<form method="POST" class="mb-5">
+<form method="POST" action="{{ url_for('add_task') }}" class="mb-5">
   <div class="mb-3">
     <input type="text" name="task" class="form-control" placeholder="New task description" required />
   </div>
