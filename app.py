@@ -1,7 +1,7 @@
 import csv
 import os
 import time
-from datetime import datetime, timedelta
+from datetime import datetime
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -216,6 +216,49 @@ def add_task():
     tasks.append(new_task)
     save_tasks(tasks)
     flash('Task added successfully.', 'success')
+    return redirect(url_for('dashboard'))
+
+@app.route('/complete/<int:task_index>', methods=['POST'])
+def complete_task(task_index):
+    username = get_current_user()
+    if not username:
+        return redirect(url_for('login'))
+
+    tasks = load_tasks()
+    user_tasks = [t for t in tasks if t['username'] == username]
+
+    if 0 <= task_index < len(user_tasks):
+        task_to_complete = user_tasks[task_index]
+        # Find this task in the main tasks list and mark completed
+        for task in tasks:
+            if task == task_to_complete:
+                task['completed'] = 'True'
+                break
+        save_tasks(tasks)
+        flash("Task marked as completed!", "success")
+    else:
+        flash("Invalid task index.", "danger")
+
+    return redirect(url_for('dashboard'))
+
+@app.route('/delete/<int:task_index>', methods=['POST'])
+def delete_task(task_index):
+    username = get_current_user()
+    if not username:
+        return redirect(url_for('login'))
+
+    tasks = load_tasks()
+    user_tasks = [t for t in tasks if t['username'] == username]
+
+    if 0 <= task_index < len(user_tasks):
+        task_to_delete = user_tasks[task_index]
+        # Remove this task from the main tasks list
+        tasks = [t for t in tasks if t != task_to_delete]
+        save_tasks(tasks)
+        flash("Task deleted successfully.", "success")
+    else:
+        flash("Invalid task index.", "danger")
+
     return redirect(url_for('dashboard'))
 
 if __name__ == '__main__':
