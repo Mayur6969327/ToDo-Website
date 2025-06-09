@@ -2,6 +2,7 @@
 
 A full-featured Flask-based Todo Web App with CSV file storage. Users can register, log in, manage tasks, reset passwords, and delete accounts securely.
 
+
 🌟 Features
 
 🔐 User Authentication (Signup/Login/Logout)
@@ -22,6 +23,7 @@ A full-featured Flask-based Todo Web App with CSV file storage. Users can regist
 
 
 
+
 🖥️ Tech Stack
 
 Backend: Flask (Python)
@@ -31,23 +33,42 @@ Frontend: HTML, Bootstrap 5
 Data Storage: CSV (users.csv, tasks.csv)
 
 
+
+
 📂 Project Structure
 
 todo-web/
+
 ├── app.py
+
 ├── users.csv
+
 ├── tasks.csv
+
 ├── requirements.txt
+
 ├── Procfile
+
 ├── README.md
+
 ├── templates/
+
 │   ├── layout.html
+
 │   ├── login.html
+
 │   ├── signup.html
+
 │   ├── dashboard.html
+
 │   ├── profile.html
+
 └── static/
+
     └── styles.css
+
+
+
 
 
 📌 Notes
@@ -57,6 +78,9 @@ All data is stored in CSV files.
 Make sure to keep your users.csv and tasks.csv safe; they contain sensitive information.
 
 The app uses password hashing and limited attempts for account deletion for better security.
+
+
+
 
 📧 Contact
 
